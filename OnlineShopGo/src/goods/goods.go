@@ -2,6 +2,7 @@ package goods
 
 import (
 	"OnlineShopGo/src/dao"
+	"OnlineShopGo/src/jsonify"
 	"database/sql"
 	"fmt"
 )
@@ -39,4 +40,20 @@ func DeleteGoods (goodsName string) string {
 	}
 	fmt.Println(ret)
 	return "successful"
+}
+
+func GetGoods (num int) string {
+	sqlStr := "SELECT * FROM onlineshop.goods LIMIT ?"
+	rows, err := dao.DB.Query(sqlStr, num)
+	if err != nil {
+		fmt.Println("Get goods failed, err:", err)
+		return ""
+	}
+	defer func() {
+		err := rows.Close()
+		if err != nil {
+			fmt.Println("rowsClose failed,err:", err)
+		}
+	}()
+	return jsonify.Jsonify(rows)
 }

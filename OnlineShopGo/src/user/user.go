@@ -32,3 +32,20 @@ func Register (name string, passwd string) (string) {
 	fmt.Println(ret)
 	return "successful"
 }
+
+func ChangePasswd (name string, oldPasswd string, newPasswd string) string {
+	sqlStr := "SELECT passwd FROM onlineshop.user WHERE name = ?"
+	sqlResult := ""
+	_ = dao.DB.QueryRow(sqlStr, name).Scan(&sqlResult)
+	if sqlResult != oldPasswd {
+		return "wrong old passwd"
+	}
+	sqlStr = "UPDATE onlineshop.user SET passwd = ? WHERE name = ?"
+	ret, err := dao.DB.Exec(sqlStr, newPasswd, name)
+	if err != nil {
+		fmt.Println("Update passwd failed,err:", err)
+		return "failed"
+	}
+	fmt.Println(ret)
+	return "successful"
+}

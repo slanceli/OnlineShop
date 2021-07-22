@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="dataSourceStorageLocal" created-in="GO-211.7442.57" />
+  <component name="dataSourceStorageLocal" created-in="GO-211.7442.57">
+    <data-source name="onlineshop@localhost" uuid="44359e36-f37b-45c8-b6e8-418675e62a3c">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" exact-version="0" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>root</user-name>
+      <schema-mapping />
+    </data-source>
+  </component>
 </project>

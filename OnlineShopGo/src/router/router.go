@@ -9,6 +9,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 var Router *gin.Engine
@@ -75,13 +76,14 @@ func InitRouter () {
 			}
 		})
 	}
-	Router.GET("/login", AuthenticateUserInfo(), func(c *gin.Context) {
-		c.Status(http.StatusOK)
+
+	Router.GET("/getgoods", func(c *gin.Context) {
+		num, _ := strconv.Atoi(c.Query("num"))
+		c.String(http.StatusOK, goods.GetGoods(num))
 	})
 	Router.GET("/register", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
-
 
 	Router.POST("/login", func(c *gin.Context) {
 		userName := c.PostForm("name")
@@ -101,14 +103,21 @@ func InitRouter () {
 	Router.POST("/register", func(c *gin.Context) {
 		userName := c.PostForm("name")
 		userPasswd := c.PostForm("passwd")
-		fmt.Println(c.Request.RequestURI)
 		c.String(http.StatusOK, user.Register(userName, userPasswd))
+	})
+	Router.POST("/changepasswd", AuthenticateUserInfo(), func(c *gin.Context) {
+		oldPasswd := c.PostForm("oldPasswd")
+		newPasswd := c.PostForm("newPasswd")
+		session := sessions.Default(c)
+		v := session.Get("name")
+		fmt.Println(v)
+		c.String(http.StatusOK, user.ChangePasswd(v.(string), oldPasswd, newPasswd))
 	})
 }
 
 func Run (address string) {
 	err := Router.Run(address)
 	if err != nil {
-		fmt.Println("Run Router falied, err:", err)
+		fmt.Println("Run Router failed, err:", err)
 	}
 }
