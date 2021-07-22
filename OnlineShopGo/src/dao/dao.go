@@ -9,7 +9,8 @@ import (
 var DB *sql.DB
 var dbcon = "root:admin@tcp(127.0.0.1:3306)/?charset=utf8"
 
-func DBInit() { //初始化数据库
+//初始化数据库
+func DBInit() {
 	_db, err := sql.Open("mysql", dbcon)
 	DB = _db
 	if err != nil {
