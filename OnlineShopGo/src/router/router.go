@@ -49,6 +49,14 @@ func InitRouter () {
 		admin.GET("", func(c *gin.Context) {
 			c.Status(http.StatusOK)
 		})
+		admin.GET("/deletegoods", func(c *gin.Context) {
+				goodsName := c.Query("Name")
+				if res := goods.DeleteGoods(goodsName); res == "successful"{
+					c.String(http.StatusOK, "successful")
+				} else {
+					c.String(http.StatusInternalServerError, res)
+				}
+		})
 
 		admin.POST("/addgoods", func(c *gin.Context) {
 			body := goods.Goods{}
@@ -60,7 +68,11 @@ func InitRouter () {
 				return
 			}
 			fmt.Println(body)
-			c.Status(http.StatusOK)
+			if goods.AddGoods(body) {
+				c.String(http.StatusOK, "successful")
+			} else {
+				c.String(http.StatusInternalServerError, "failed")
+			}
 		})
 	}
 	Router.GET("/login", AuthenticateUserInfo(), func(c *gin.Context) {
@@ -83,7 +95,7 @@ func InitRouter () {
 			}
 			c.String(http.StatusOK, "successful")
 		} else {
-			c.String(http.StatusOK, "failed")
+			c.String(http.StatusInternalServerError, "failed")
 		}
 	})
 	Router.POST("/register", func(c *gin.Context) {
