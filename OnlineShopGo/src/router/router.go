@@ -9,7 +9,6 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 var Router *gin.Engine
@@ -76,10 +75,8 @@ func InitRouter () {
 			}
 		})
 	}
-
 	Router.GET("/getgoods", func(c *gin.Context) {
-		num, _ := strconv.Atoi(c.Query("num"))
-		c.String(http.StatusOK, goods.GetGoods(num))
+		c.String(http.StatusOK, goods.GetGoods())
 	})
 	Router.GET("/register", func(c *gin.Context) {
 		c.Status(http.StatusOK)
@@ -97,7 +94,7 @@ func InitRouter () {
 			}
 			c.String(http.StatusOK, "successful")
 		} else {
-			c.String(http.StatusInternalServerError, "failed")
+			c.String(http.StatusOK, "failed")
 		}
 	})
 	Router.POST("/register", func(c *gin.Context) {
