@@ -2,12 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3d3c8e7-4ffc-41ae-8d3a-1d008893de58" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/jsonify/jsonify.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/redis/redis.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/goods/goods.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/goods/goods.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/router/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/router.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/user/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/app.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
