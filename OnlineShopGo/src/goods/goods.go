@@ -12,7 +12,7 @@ type Goods struct {
 	Name string
 	Price float64
 	Description string
-	Left int
+	Goods_Left int
 	Imgbase64 string
 }
 
@@ -20,12 +20,11 @@ func AddGoods (goods Goods) bool {
 	redis.HMSet(goods.Name, map[string]interface{}{
 		"Price" : goods.Price,
 		"Description" : goods.Description,
-		"Left" : goods.Left,
+		"Goods_Left" : goods.Goods_Left,
 		"Imgbase64" : goods.Imgbase64,
 	})
-	redis.Del("AllGoods")
 	sqlStr := "INSERT INTO onlineshop.goods VALUES (NULL, ?, ?, ?, ?, ?)"
-	ret, err := dao.DB.Exec(sqlStr, goods.Name, goods.Price, goods.Description, goods.Left, goods.Imgbase64)
+	ret, err := dao.DB.Exec(sqlStr, goods.Name, goods.Price, goods.Description, goods.Goods_Left, goods.Imgbase64)
 	if err != nil {
 		fmt.Println("Add goods failed, err:", err)
 		return false
@@ -33,7 +32,7 @@ func AddGoods (goods Goods) bool {
 	redis.HMSet(goods.Name, map[string]interface{}{
 		"Price" : goods.Price,
 		"Description" : goods.Description,
-		"Left" : goods.Left,
+		"Goods_Left" : goods.Goods_Left,
 		"Imgbase64" : goods.Imgbase64,
 	})
 	fmt.Println(ret)
@@ -52,7 +51,7 @@ func DeleteGoods (goodsName string) string {
 		}
 		redis.HMSet(goodsName, map[string]interface{}{"id": sqlResult})
 	}
-	redis.HDel(goodsName, "id", "Name", "Price", "Description", "Left", "Imgbase64")
+	redis.HDel(goodsName, "id", "Name", "Price", "Description", "Goods_Left", "Imgbase64")
 	redis.Del("AllGoods")
 	sqlStr = "DELETE FROM onlineshop.goods WHERE Name = ?"
 	ret, err := dao.DB.Exec(sqlStr, goodsName)
@@ -60,17 +59,17 @@ func DeleteGoods (goodsName string) string {
 		fmt.Println("Delete goods failed, err:", err)
 		return "failed"
 	}
-	redis.HDel(goodsName, "id", "Name", "Price", "Description", "Left", "Imgbase64")
+	redis.HDel(goodsName, "id", "Name", "Price", "Description", "Goods_Left", "Imgbase64")
 	fmt.Println(ret)
 	return "successful"
 }
 
-func GetGoods () string {
-	sqlStr := "SELECT * FROM onlineshop.goods"
-	rows, err := dao.DB.Query(sqlStr)
+func GetGoods (num int) string {
+	sqlStr := "SELECT Name, Goods_Left, Price, Description, Imgbase64 FROM onlineshop.goods LIMIT ?"
+	rows, err := dao.DB.Query(sqlStr, num)
 	if err != nil {
 		fmt.Println("Get goods failed, err:", err)
-		return ""
+		return "failed"
 	}
 	defer func() {
 		err := rows.Close()

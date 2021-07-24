@@ -9,6 +9,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 var Router *gin.Engine
@@ -76,7 +77,8 @@ func InitRouter () {
 		})
 	}
 	Router.GET("/getgoods", func(c *gin.Context) {
-		c.String(http.StatusOK, goods.GetGoods())
+		num, _ := strconv.Atoi(c.Query("num"))
+		c.String(http.StatusOK, goods.GetGoods(num))
 	})
 	Router.GET("/register", func(c *gin.Context) {
 		c.Status(http.StatusOK)
