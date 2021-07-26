@@ -2,6 +2,7 @@ package order
 
 import (
 	"OnlineShopGo/src/dao"
+	"OnlineShopGo/src/jsonify"
 	"OnlineShopGo/src/redis"
 	"fmt"
 	"strconv"
@@ -18,8 +19,14 @@ type Order struct {
 	State string
 }
 
-func GetOrder () {
-
+func GetOrder (name string) string {
+	sqlStr := "SELECT OrderId, UserName, GoodsName, Address, Num, Date, State FROM onlineshop.order WHERE UserName = ?"
+	rows, err := dao.DB.Query(sqlStr, name)
+	if err != nil {
+		fmt.Println("Get order failed, err:", err)
+		return "failed"
+	}
+	return jsonify.Jsonify(rows)
 }
 
 //创建订单并生成订单编号

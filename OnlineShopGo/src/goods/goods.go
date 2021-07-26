@@ -6,6 +6,7 @@ import (
 	"OnlineShopGo/src/redis"
 	"database/sql"
 	"fmt"
+	"time"
 )
 
 type Goods struct {
@@ -29,12 +30,15 @@ func AddGoods (goods Goods) bool {
 		fmt.Println("Add goods failed, err:", err)
 		return false
 	}
-	redis.HMSet(goods.Name, map[string]interface{}{
-		"Price" : goods.Price,
-		"Description" : goods.Description,
-		"Goods_Left" : goods.Goods_Left,
-		"Imgbase64" : goods.Imgbase64,
-	})
+	defer func() {
+		time.Sleep(time.Millisecond * 500)
+		redis.HMSet(goods.Name, map[string]interface{}{
+			"Price" : goods.Price,
+			"Description" : goods.Description,
+			"Goods_Left" : goods.Goods_Left,
+			"Imgbase64" : goods.Imgbase64,
+		})
+	}()
 	fmt.Println(ret)
 	return true
 }
@@ -43,6 +47,7 @@ func DeleteGoods (goodsName string) string {
 	var sqlStr string
 	var sqlResult string
 	redisResult := redis.HMGet(goodsName, "Price")
+	fmt.Println("Price by redis:", redisResult)
 	if redisResult == nil {
 		sqlStr := "SELECT Price FROM onlineshop.goods WHERE Name = ?"
 		err := dao.DB.QueryRow(sqlStr, goodsName).Scan(&sqlResult)
@@ -52,14 +57,16 @@ func DeleteGoods (goodsName string) string {
 		redis.HMSet(goodsName, map[string]interface{}{"id": sqlResult})
 	}
 	redis.HDel(goodsName, "id", "Name", "Price", "Description", "Goods_Left", "Imgbase64")
-	redis.Del("AllGoods")
 	sqlStr = "DELETE FROM onlineshop.goods WHERE Name = ?"
 	ret, err := dao.DB.Exec(sqlStr, goodsName)
 	if err != nil {
 		fmt.Println("Delete goods failed, err:", err)
 		return "failed"
 	}
-	redis.HDel(goodsName, "id", "Name", "Price", "Description", "Goods_Left", "Imgbase64")
+	defer func() {
+		time.Sleep(time.Millisecond * 500)
+		redis.HDel(goodsName, "id", "Name", "Price", "Description", "Goods_Left", "Imgbase64")
+	}()
 	fmt.Println(ret)
 	return "successful"
 }
@@ -78,4 +85,31 @@ func GetGoods (num int) string {
 		}
 	}()
 	return jsonify.Jsonify(rows)
+}
+
+func UpdateGoods (Attributes string, goodsName string, value interface{}) string {
+	var err error
+	redis.HMSet(goodsName, map[string]interface{}{
+		Attributes : value,
+	})
+	sqlStr := "UPDATE onlineshop.goods SET " + Attributes + " = ? WHERE Name = ?"
+	switch value.(type) {
+	case string:
+		_, err = dao.DB.Exec(sqlStr, value.(string), goodsName)
+	case int:
+		_, err = dao.DB.Exec(sqlStr, value.(int), goodsName)
+	case float64:
+		_, err = dao.DB.Exec(sqlStr, value.(float64), goodsName)
+	}
+	defer func() {
+		time.Sleep(time.Millisecond * 500)
+		redis.HMSet(goodsName, map[string]interface{}{
+			Attributes : value,
+		})
+	}()
+	if err != nil {
+		fmt.Println("Update goods failed, err:", err)
+		return "failed"
+	}
+	return "successful"
 }

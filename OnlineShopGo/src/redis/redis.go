@@ -36,7 +36,7 @@ func Get (key string) interface{} {
 }
 
 func Set (key string, value interface{}) {
-	err := redisdb.Set(key, value, 0).Err()
+	err := redisdb.Set(key, value, 3600).Err()
 	if err != nil {
 		fmt.Println("Set redis failed,err:", err)
 		return
