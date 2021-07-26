@@ -2,6 +2,7 @@ package router
 
 import (
 	"OnlineShopGo/src/goods"
+	order2 "OnlineShopGo/src/order"
 	"OnlineShopGo/src/user"
 	"OnlineShopGo/src/utils"
 	"fmt"
@@ -76,6 +77,34 @@ func InitRouter () {
 			}
 		})
 	}
+
+	order := Router.Group("/order", AuthenticateUserInfo())
+	{
+		order.GET("", func(c *gin.Context) {
+			c.Status(http.StatusOK)
+		})
+		order.GET("/getorder", func(c *gin.Context) {
+			c.String(http.StatusOK, "")
+		})
+
+		order.POST("/makeorder", func(c *gin.Context) {
+			body := order2.Order{}
+			if err := c.ShouldBindJSON(&body); err != nil {
+				c.AbortWithStatusJSON(
+					http.StatusInternalServerError,
+					gin.H{"error": err.Error()})
+				fmt.Println("BingJSON failed, error:", err)
+				return
+			}
+			fmt.Println(body)
+			session := sessions.Default(c)
+			v := session.Get("name")
+			body.OrderId = utils.GetGUID().Hex()
+			body.UserName = v.(string)
+			c.String(http.StatusOK, order2.MakeOrder(body))
+		})
+	}
+
 	Router.GET("/getgoods", func(c *gin.Context) {
 		num, _ := strconv.Atoi(c.Query("num"))
 		c.String(http.StatusOK, goods.GetGoods(num))
