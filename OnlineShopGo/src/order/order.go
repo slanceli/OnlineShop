@@ -62,6 +62,32 @@ func MakeOrder (order Order) string {
 	return "successful"
 }
 
-func DeleteOrder () {
+func CancelOrder (OrderId string) string {
+	sqlStr := "UPDATE onlineshop.order SET State = ? WHERE OrderId = ?"
+	_, err := dao.DB.Exec(sqlStr,"-1" , OrderId)
+	if err != nil {
+		fmt.Println("Cancel order failed, err:", err)
+		return "failed"
+	}
+	return "successful"
+}
 
+func UpdateOrder (OrderId string) string {
+	sqlStr := "UPDATE onlineshop.order SET State = ? WHERE OrderId = ?"
+	_, err := dao.DB.Exec(sqlStr, "1", OrderId)
+	if err != nil {
+		fmt.Println("Update order failed,err:", err)
+		return "failed"
+	}
+	return "successful"
+}
+
+func DeleteOrder (OrderId string) string {
+	sqlStr := "DELETE FROM onlineshop.order WHERE OrderId = ?"
+	_, err := dao.DB.Exec(sqlStr, OrderId)
+	if err != nil {
+		fmt.Println("Delete order failed, err:", err)
+		return "failed"
+	}
+	return "successful"
 }

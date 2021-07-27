@@ -59,11 +59,19 @@ func InitRouter () {
 				c.String(http.StatusInternalServerError, res)
 			}
 		})
-		admin.GET("updategoods", func(c *gin.Context) {
+		admin.GET("/updategoods", func(c *gin.Context) {
 			Attributes := c.Query("Attributes")
 			Value := c.Query("Value")
 			GoodsName := c.Query("GoodsName")
 			c.String(http.StatusOK, goods.UpdateGoods(Attributes, GoodsName, Value))
+		})
+		admin.GET("/updateorder", func(c *gin.Context) {
+			OrderId := c.Query("OrderId")
+			c.String(http.StatusOK, order2.UpdateOrder(OrderId))
+		})
+		admin.GET("/deleteorder", func(c *gin.Context) {
+			OrderId := c.Query("OrderId")
+			c.String(http.StatusOK, order2.DeleteOrder(OrderId))
 		})
 
 		admin.POST("/addgoods", func(c *gin.Context) {
@@ -93,6 +101,10 @@ func InitRouter () {
 			session := sessions.Default(c)
 			v := session.Get("name")
 			c.String(http.StatusOK, order2.GetOrder(v.(string)))
+		})
+		order.GET("/cancelorder", func(c *gin.Context) {
+			OrderId := c.Query("OrderId")
+			c.String(http.StatusOK, order2.CancelOrder(OrderId))
 		})
 
 		order.POST("/makeorder", func(c *gin.Context) {
