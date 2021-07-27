@@ -73,6 +73,9 @@ func InitRouter () {
 			OrderId := c.Query("OrderId")
 			c.String(http.StatusOK, order2.DeleteOrder(OrderId))
 		})
+		admin.GET("/getallorder", func(c *gin.Context) {
+			c.String(http.StatusOK, order2.GetAllOrder())
+		})
 
 		admin.POST("/addgoods", func(c *gin.Context) {
 			body := goods.Goods{}

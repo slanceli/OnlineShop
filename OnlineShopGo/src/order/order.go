@@ -91,3 +91,13 @@ func DeleteOrder (OrderId string) string {
 	}
 	return "successful"
 }
+
+func GetAllOrder () string {
+	sqlStr := "SELECT OrderId, UserName, GoodsName, Address, Num, Date, State FROM onlineshop.order WHERE 1 = ?"
+	rows, err := dao.DB.Query(sqlStr, "1")
+	if err != nil {
+		fmt.Println("Get all order failed, err:", err)
+		return "failed"
+	}
+	return jsonify.Jsonify(rows)
+}
